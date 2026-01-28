@@ -1,1 +1,95 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ADMIN 3 - Refat.vai.yt7</title>
+    <style>
+        body { font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; background-color: #1a1a2e; display: flex; justify-content: center; align-items: center; height: 100vh; margin: 0; }
+        .chat-container { width: 400px; height: 620px; background: #16213e; border-radius: 15px; overflow: hidden; box-shadow: 0 10px 30px rgba(0,0,0,0.5); display: flex; flex-direction: column; }
+        .chat-header { background: #0f3460; color: white; padding: 15px; display: flex; align-items: center; border-bottom: 2px solid #e94560; }
+        .chat-header img { width: 45px; height: 45px; border-radius: 50%; margin-right: 12px; border: 2px solid #e94560; }
+        .chat-header h3 { margin: 0; font-size: 18px; letter-spacing: 0.5px; }
+        .chat-messages { flex: 1; padding: 20px; overflow-y: auto; color: #fff; background: #1a1a2e; scroll-behavior: smooth; }
+        .message { margin-bottom: 15px; padding: 12px; border-radius: 10px; max-width: 85%; font-size: 14px; line-height: 1.5; word-wrap: break-word; }
+        .admin-msg { background: #0f3460; align-self: flex-start; border-left: 4px solid #e94560; }
+        .user-msg { background: #e94560; align-self: flex-end; margin-left: auto; color: white; }
+        .chat-input { padding: 15px; background: #0f3460; display: flex; gap: 10px; border-top: 1px solid #16213e; }
+        input[type="text"] { flex: 1; padding: 12px; border-radius: 5px; border: none; outline: none; background: #1a1a2e; color: white; }
+        .img-btn { background: #4e4e4e; color: white; border: none; padding: 10px; border-radius: 5px; cursor: pointer; font-size: 18px; }
+        .send-btn { background: #e94560; color: white; border: none; padding: 10px 20px; border-radius: 5px; cursor: pointer; font-weight: bold; }
+    </style>
+</head>
+<body>
+
+<div class="chat-container">
+    <div class="chat-header">
+        <img src="https://i.ibb.co/LhqZ8Z8/1000076397.jpg" alt="ADMIN 3">
+        <div>
+            <h3>ADMIN 3</h3>
+            <small style="color: #00ff00;">● Online | Refat.vai.yt7</small>
+        </div>
+    </div>
+    <div class="chat-messages" id="chatBox">
+        <div class="message admin-msg">আসসালামু আলাইকুম! আমি <b>ADMIN 3</b>। এটি Refat.vai.yt7 এর অফিশিয়াল বিটা প্রক্সি সার্ভার শপ। এটি গেমের বিটা সার্ভার, সাধারণ নেটের প্রক্সি নয়। কীভাবে সাহায্য করতে পারি?</div>
+    </div>
+    <div class="chat-input">
+        <button class="img-btn" onclick="alert('পেমেন্ট স্ক্রিনশট দেখানোর জন্য এটি ব্যবহার করুন।')">📷</button>
+        <input type="text" id="userInput" placeholder="আপনার মেসেজ..." onkeypress="if(event.key === 'Enter') sendMessage()">
+        <button class="send-btn" onclick="sendMessage()">Send</button>
+    </div>
+</div>
+
+<script type="module">
+    import { GoogleGenerativeAI } from "https://esm.run/@google/generative-ai";
+
+    const API_KEY = "AIzaSyAR_4WiF35OrqNIyph5yzMTT5jp8a4VwC4";
+    const genAI = new GoogleGenerativeAI(API_KEY);
+    
+    // আপনার সব সেটিংস এখানে আপডেট করা আছে
+    const instruction = `
+    তোমার নাম ADMIN 3। তোমার মালিকের নাম REFAT। ইউটিউব চ্যানেল: Refat.vai.yt7।
+    তুমি 'বিটা প্রক্সি সার্ভার' (Beta Proxy Server) বিক্রি করো। এটি ইন্টারনেটের কোনো বিষয় না, এটি গেমের বিটা সার্ভার যার ভেতর সব বান্ডিল থাকে।
+    দাম: 
+    - VIP প্রক্সি: ১২০০ টাকা। 
+    - Local প্রক্সি: ৬০০ টাকা। 
+    ডিসকাউন্ট পলিসি: কেউ দাম কমাতে চাইলে সর্বোচ্চ ৫০ টাকা কমাতে পারো। এর বেশি কোনোভাবেই কমাবে না।
+    আচরণ: খুব গম্ভীর এবং প্রফেশনাল থাকবে। রিফাত ভাই সম্পর্কে সম্মান দিয়ে কথা বলবে।
+    `;
+
+    const model = genAI.getGenerativeModel({ 
+        model: "gemini-1.5-flash",
+        systemInstruction: instruction 
+    });
+
+    let chatSession = model.startChat({ history: [] });
+
+    window.sendMessage = async function() {
+        const input = document.getElementById('userInput');
+        const chatBox = document.getElementById('chatBox');
+        const userText = input.value.trim();
+
+        if (!userText) return;
+
+        // ইউজারের মেসেজ স্ক্রিনে দেখানো
+        chatBox.insertAdjacentHTML('beforeend', `<div class="message user-msg">${userText}</div>`);
+        input.value = "";
+        chatBox.scrollTop = chatBox.scrollHeight;
+
+        try {
+            // গুগলের এআই ইঞ্জিন থেকে উত্তর আনা
+            const result = await chatSession.sendMessage(userText);
+            const botResponse = await result.response.text();
+
+            // বটের উত্তর স্ক্রিনে দেখানো
+            chatBox.insertAdjacentHTML('beforeend', `<div class="message admin-msg">${botResponse}</div>`);
+            chatBox.scrollTop = chatBox.scrollHeight;
+        } catch (error) {
+            chatBox.insertAdjacentHTML('beforeend', `<div class="message admin-msg" style="color: red;">দুঃখিত, কানেকশন সমস্যা! আবার চেষ্টা করুন।</div>`);
+        }
+    }
+</script>
+
+</body>
+</html>
 
